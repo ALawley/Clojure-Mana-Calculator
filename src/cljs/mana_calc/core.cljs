@@ -1,81 +1,94 @@
 (ns mana-calc.core
-  (:require [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]))
-
-(defn color-calc
-  [color-symbols all-symbols lands]
-  (if (> color-symbols 0)
-    (double (/ lands (/ all-symbols color-symbols)))
-    0))
-
-(defn symbol-sum
-  [symbol-counts]
-  (reduce
-    (fn [accum [color mana-symbols]]
-      (+ accum mana-symbols))
-    0
-    symbol-counts))
-
-(defn remainder-rank
-  [manabase]
-  (keys (sort-by val >
-          (reduce
-            (fn [accum [color mana-symbols]]
-              (into accum {color (mod mana-symbols 1)}))
-            {}
-            manabase))))
-
-
-(defn raw-mana-calc
-  [symbol-counts lands]
-  (reduce
-    (fn [accum [color mana-symbols]]
-      (into accum {color (color-calc mana-symbols (symbol-sum symbol-counts) lands)}))
-    {}
-    symbol-counts))
-
-(defn round-down-sum
-  [manabase]
-  (reduce
-    (fn [accum [color mana-symbols]]
-      (+ accum (int (Math/floor mana-symbols))))
-    0
-    manabase))
-
-(defn round-up-keys
-  [symbol-counts lands]
-  (take
-    (- lands (round-down-sum (raw-mana-calc symbol-counts lands)))
-    (remainder-rank (raw-mana-calc symbol-counts lands))))
-
-(defn round-up-color [deck color]
-  (reduce
-    (fn [inced-deck [col number]]
-      (if (= col color)
-        (assoc inced-deck col (inc number))
-        (assoc inced-deck col number)))
-    {}
-    deck))
-
-(defn round-up-all [deck colors-to-round]
-  (reduce #(round-up-color %1 %2)
-          deck
-          colors-to-round))
-
-
-(defn calculator
-  [symbol-counts lands]
-  (reduce
-    (fn [accum [color mana-symbols]]
-      (into accum {color (int (Math/floor mana-symbols))}))
-    {}
-    (round-up-all (raw-mana-calc symbol-counts lands)
-      (round-up-keys symbol-counts lands))))
+  (:require [clojure.string :as string]
+            [reagent.core :as r]))
 
 (enable-console-print!)
 
-(defonce app-state (atom {:text "Hi!"
-                          :mana-base {:w 1 :u 2 :b 3 :r 4 :g 5}}))
+; ;; The "database" of your client side UI.
+; (def app-state
+;   (r/atom
+;    {:contacts
+;     [{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
+;      {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
+;      {:first "Eva" :middle "Lu" :last "Ator" :email "eval@mit.edu"}
+;      {:first "Louis" :last "Reasoner" :email "prolog@mit.edu"}
+;      {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
+;      {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}]}))
+;
+; (defn update-contacts! [f & args]
+;   (apply swap! app-state update-in [:contacts] f args))
+;
+; (defn add-contact! [c]
+;   (update-contacts! conj c))
+;
+; (defn remove-contact! [c]
+;   (update-contacts! (fn [cs]
+;                       (vec (remove #(= % c) cs)))
+;                     c))
+;
+; ;; The next three fuctions are copy/pasted verbatim from the Om tutorial
+; (defn middle-name [{:keys [middle middle-initial]}]
+;   (cond
+;    middle (str " " middle)
+;    middle-initial (str " " middle-initial ".")))
+;
+; (defn display-name [{:keys [first last] :as contact}]
+;   (str last ", " first (middle-name contact)))
+;
+; (defn parse-contact [contact-str]
+;   (let [[first middle last :as parts] (string/split contact-str #"\s+")
+;         [first last middle] (if (nil? last) [first middle] [first last middle])
+;         middle (when middle (string/replace middle "." ""))
+;         c (if middle (count middle) 0)]
+;     (when (>= (reduce + (map #(if % 1 0) parts)) 2)
+;       (cond-> {:first first :last last}
+;         (== c 1) (assoc :middle-initial middle)
+;         (>= c 2) (assoc :middle middle)))))
+;
+; ;; UI components
+; (defn contact [c]
+;   [:li
+;    [:span (display-name c)]
+;    [:button {:on-click #(remove-contact! c)} 
+;     "Delete"]])
+;
+; (defn new-contact []
+;   (let [val (r/atom "")]
+;     (fn []
+;       [:div
+;        [:input {:type "text"
+;                 :placeholder "Contact Name"
+;                 :value @val
+;                 :on-change #(reset! val (-> % .-target .-value))}]
+;        [:button {:on-click #(when-let [c (parse-contact @val)]
+;                               (add-contact! c)
+;                               (reset! val ""))}
+;         "Add"]])))
+;
+; (defn contact-list []
+;   [:div
+;    [:h1 "Contact list"]
+;    [:ul
+;     (for [c (:contacts @app-state)]
+;       [contact c])]
+;    [new-contact]])
+;
+; ;; Render the root component
+; (defn start []
+;   (r/render-component 
+;    [contact-list]
+;    (.getElementById js/document "root")))
+
+(def app-state
+  (r/atom {:text "Hi!"
+           :mana-base {:w 1
+                       :u 2
+                       :b 3
+                       :r 4
+                       :g 5}}))
+
+(defn update-mana-base! [f & args]
+  (apply swap! app-state update :mana-base f args))
 
 (defn display-basic [color]
   (str
@@ -83,55 +96,25 @@
       :w "Plains: "
       :u "Islands: "
       :b "Swamps: "
-      :r "Mountains "
-      :g "Forests ")
+      :r "Mountains: "
+      :g "Forests: ")
     (val color)))
 
-(defn basic-view [color owner]
-  (reify
-    om/IRender
-    (render [this]
-      (dom/li nil (display-basic color)))))
+(defn basic-view [color]
+  [:li
+   [:span (display-basic color)]])
 
-(defn mana-base-view [data owner]
-  (reify
-    om/IRender
-    (render [this]
-      (dom/div nil
-        (dom/h2 nil "Mana Base")
-        (apply dom/ul nil
-          (om/build-all basic-view (:mana-base data)))))))
+(defn mana-base-view []
+  [:div
+   [:h1 "Mana Base"]
+   [:ul
+    (for [color (:mana-base @app-state)]
+      ^{:key color} [basic-view color])]])
 
-; (defn root-component [data owner]
-;   (om/component
-;     (apply dom/ul nil
-;       (map (fn [text] (dom/li nil text)) (vals (:mana-base data)))))))))))
-
-(om/root mana-base-view app-state
-  {:target (. js/document (getElementById "app"))})
+(defn start []
+  (r/render-component
+    [mana-base-view]
+    (.getElementById js/document "root")))
 
 (defn parse-input [input-str]
   (cljs.reader/read-string input-str))
-
-(defn generate-manabase [data owner]
-  (let [mana-symbols {:w (-> (om/get-node owner "white")
-                            .-value
-                            parse-input)
-                      :u (-> (om/get-node owner "blue")
-                            .-value
-                            parse-input)
-                      :b (-> (om/get-node owner "black")
-                            .-value
-                            parse-input)
-                      :r (-> (om/get-node owner "red")
-                            .-value
-                            parse-input)
-                      :g (-> (om/get-node owner "green")
-                            .-value
-                            parse-input)}
-        lands (-> (om/get-node owner "lands")
-                  .-value
-                  parse-input)]
-      (when mana-symbols
-        (om/transact! data :mana-base (calculator mana-symbols lands))
-        (set! (.-value mana-symbols) ""))))

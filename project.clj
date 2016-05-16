@@ -12,7 +12,8 @@
                  [ring.middleware.logger "0.5.0"]
                  [compojure "1.5.0"]
                  [environ "1.0.2"]
-                 [org.omcljs/om "1.0.0-alpha31"]]
+                 [reagent "0.6.0-alpha"]
+                 [speclj "3.3.2"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-environ "1.0.1"]]
@@ -21,7 +22,7 @@
 
   :source-paths ["src/clj" "src/cljs" "dev"]
 
-  :test-paths ["test/clj"]
+  :test-paths ["spec/clj" "spec/cljs"]
 
   :clean-targets ^{:protect false} [:target-path :compile-path "resources/public/js"]
 
@@ -83,24 +84,23 @@
 
              :server-logfile "log/figwheel.log"}
 
-  :doo {:build "test"}
-
   :profiles {:dev
              {:dependencies [[figwheel "0.5.2"]
                              [figwheel-sidecar "0.5.2"]
                              [com.cemerick/piggieback "0.2.1"]
-                             [org.clojure/tools.nrepl "0.2.12"]]
+                             [org.clojure/tools.nrepl "0.2.12"]
+                             [speclj "3.3.0"]]
 
               :plugins [[lein-figwheel "0.5.2"]
-                        [lein-doo "0.1.6"]]
+                        [lein-doo "0.1.6"]
+                        [speclj "3.3.0"]]
 
               :cljsbuild {:builds
-                          {:test
-                           {:source-paths ["src/cljs" "test/cljs"]
-                            :compiler
-                            {:output-to "resources/public/js/compiled/testable.js"
-                             :main mana-calc.test-runner
-                             :optimizations :none}}}}}
+                          {:source-paths ["src/cljs"]
+                           :compiler
+                           {:output-to "resources/public/js/compiled/testable.js"
+                            :main mana-calc.test-runner
+                            :optimizations :none}}}}
 
              :uberjar
              {:source-paths ^:replace ["src/clj"]
