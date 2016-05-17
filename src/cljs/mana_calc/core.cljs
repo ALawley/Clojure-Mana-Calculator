@@ -1,94 +1,69 @@
 (ns mana-calc.core
   (:require [clojure.string :as string]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [mana-calc.calculator :as calc]))
 
 (enable-console-print!)
 
-; ;; The "database" of your client side UI.
-; (def app-state
-;   (r/atom
-;    {:contacts
-;     [{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
-;      {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
-;      {:first "Eva" :middle "Lu" :last "Ator" :email "eval@mit.edu"}
-;      {:first "Louis" :last "Reasoner" :email "prolog@mit.edu"}
-;      {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
-;      {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}]}))
-;
-; (defn update-contacts! [f & args]
-;   (apply swap! app-state update-in [:contacts] f args))
-;
-; (defn add-contact! [c]
-;   (update-contacts! conj c))
-;
-; (defn remove-contact! [c]
-;   (update-contacts! (fn [cs]
-;                       (vec (remove #(= % c) cs)))
-;                     c))
-;
-; ;; The next three fuctions are copy/pasted verbatim from the Om tutorial
-; (defn middle-name [{:keys [middle middle-initial]}]
-;   (cond
-;    middle (str " " middle)
-;    middle-initial (str " " middle-initial ".")))
-;
-; (defn display-name [{:keys [first last] :as contact}]
-;   (str last ", " first (middle-name contact)))
-;
-; (defn parse-contact [contact-str]
-;   (let [[first middle last :as parts] (string/split contact-str #"\s+")
-;         [first last middle] (if (nil? last) [first middle] [first last middle])
-;         middle (when middle (string/replace middle "." ""))
-;         c (if middle (count middle) 0)]
-;     (when (>= (reduce + (map #(if % 1 0) parts)) 2)
-;       (cond-> {:first first :last last}
-;         (== c 1) (assoc :middle-initial middle)
-;         (>= c 2) (assoc :middle middle)))))
-;
-; ;; UI components
-; (defn contact [c]
-;   [:li
-;    [:span (display-name c)]
-;    [:button {:on-click #(remove-contact! c)} 
-;     "Delete"]])
-;
-; (defn new-contact []
-;   (let [val (r/atom "")]
-;     (fn []
-;       [:div
-;        [:input {:type "text"
-;                 :placeholder "Contact Name"
-;                 :value @val
-;                 :on-change #(reset! val (-> % .-target .-value))}]
-;        [:button {:on-click #(when-let [c (parse-contact @val)]
-;                               (add-contact! c)
-;                               (reset! val ""))}
-;         "Add"]])))
-;
-; (defn contact-list []
-;   [:div
-;    [:h1 "Contact list"]
-;    [:ul
-;     (for [c (:contacts @app-state)]
-;       [contact c])]
-;    [new-contact]])
-;
-; ;; Render the root component
-; (defn start []
-;   (r/render-component 
-;    [contact-list]
-;    (.getElementById js/document "root")))
-
 (def app-state
-  (r/atom {:text "Hi!"
-           :mana-base {:w 1
-                       :u 2
-                       :b 3
-                       :r 4
-                       :g 5}}))
+  (r/atom {:mana-symbols {:w 0
+                          :u 0
+                          :b 0
+                          :r 0
+                          :g 0}
+            :lands 17
+            :mana-base {:w 1
+                        :u 2
+                        :b 3
+                        :r 4
+                        :g 5}}))
 
-(defn update-mana-base! [f & args]
-  (apply swap! app-state update :mana-base f args))
+(defn mana-update! [e color]
+  (swap! app-state assoc-in [:mana-symbols color] (int (.-target.value e))))
+
+(defn mana-base-update! []
+  (swap! app-state assoc :mana-base (calc/calculator (:mana-symbols @app-state) (:lands @app-state))))
+
+(defn land-inputs []
+  (let [v (atom 0)]
+    [:div
+      [:h3 "Mana Symbols"]
+      [:p "White:"
+        [:input {:type "number"
+                  :value (:w (:mana-symbols @app-state))
+                  :on-change (fn [e v]
+                              (mana-update! e :w)
+                              (mana-base-update!))}]]
+      [:p "Blue:"
+        [:input {:type "number"
+                  :value (:u (:mana-symbols @app-state))
+                  :on-change (fn [e]
+                              (mana-update! e :u)
+                              (mana-base-update!))}]]
+      [:p "Black:"
+        [:input {:type "number"
+                  :value (:b (:mana-symbols @app-state))
+                  :on-change (fn [e]
+                              (mana-update! e :b)
+                              (mana-base-update!))}]]
+      [:p "Red:"
+        [:input {:type "number"
+                  :value (:r (:mana-symbols @app-state))
+                  :on-change (fn [e]
+                              (mana-update! e :r)
+                              (mana-base-update!))}]]
+      [:p "Green:"
+        [:input {:type "number"
+                  :value (:g (:mana-symbols @app-state))
+                  :on-change (fn [e]
+                              (mana-update! e :g)
+                              (mana-base-update!))}]]
+      [:p "Basic Lands:"
+        [:input {:type "number"
+                  :value (:lands @app-state)
+                  :on-change (fn [e]
+                              (swap! app-state assoc :lands (int (.-target.value e))
+                                (mana-base-update!)))}]]]))
 
 (defn display-basic [color]
   (str
@@ -111,10 +86,17 @@
     (for [color (:mana-base @app-state)]
       ^{:key color} [basic-view color])]])
 
+(defn root-view []
+  [land-inputs]
+  [mana-base-view])
+
 (defn start []
   (r/render-component
+    [land-inputs]
+    (.getElementById js/document "inputs"))
+  (r/render-component
     [mana-base-view]
-    (.getElementById js/document "root")))
+    (.getElementById js/document "results")))
 
 (defn parse-input [input-str]
   (cljs.reader/read-string input-str))
