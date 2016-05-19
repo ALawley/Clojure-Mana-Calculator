@@ -12,11 +12,11 @@
                           :r 0
                           :g 0}
            :lands 17
-           :mana-base {:w 1
+           :mana-base {:w 0
                        :u 0
-                       :b 1
-                       :r 1
-                       :g 1}}))
+                       :b 0
+                       :r 0
+                       :g 0}}))
 
 (defn mana-update! [e color]
   (swap! app-state assoc-in [:mana-symbols color] (int (.-target.value e))))
