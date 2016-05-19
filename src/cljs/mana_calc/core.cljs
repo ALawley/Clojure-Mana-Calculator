@@ -12,11 +12,11 @@
                           :r 0
                           :g 0}
             :lands 17
-            :mana-base {:w 1
-                        :u 2
-                        :b 3
-                        :r 4
-                        :g 5}}))
+            :mana-base {:w 0
+                        :u 0
+                        :b 0
+                        :r 0
+                        :g 0}}))
 
 (defn mana-update! [e color]
   (swap! app-state assoc-in [:mana-symbols color] (int (.-target.value e))))
@@ -27,7 +27,7 @@
 (defn land-inputs []
   (let [v (atom 0)]
     [:div
-      [:h3 "Mana Symbols"]
+      [:h2 "Mana Symbols"]
       [:p "White:"
         [:input {:type "number"
                   :value (:w (:mana-symbols @app-state))
@@ -76,12 +76,13 @@
     (val color)))
 
 (defn basic-view [color]
-  [:li
-   [:span (display-basic color)]])
+  (if (> (val color) 0)
+    [:li
+      [:span (display-basic color)]]))
 
 (defn mana-base-view []
   [:div
-   [:h1 "Mana Base"]
+   [:h2 "Mana Base"]
    [:ul
     (for [color (:mana-base @app-state)]
       ^{:key color} [basic-view color])]])
