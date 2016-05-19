@@ -66,24 +66,26 @@
                               (mana-base-update!))}]]]))
 
 (defn display-basic [color]
-  (str
-    (condp = (key color)
-      :w "Plains: "
-      :u "Islands: "
-      :b "Swamps: "
-      :r "Mountains: "
-      :g "Forests: ")
-    (val color)))
+  [:div {:class 'color' :id (key color)}
+    [:div.color-name
+      (condp = (key color)
+        :w "Plains"
+        :u "Islands"
+        :b "Swamps"
+        :r "Mountains"
+        :g "Forests")]
+    [:div.color-number
+      (val color)]])
 
 (defn basic-view [color]
   (if (> (val color) 0)
-    [:li
+    [:div {:id (key color)}
       [:span (display-basic color)]]))
 
 (defn mana-base-view []
   [:div
    [:h2 "Mana Base"]
-   [:ul
+   [:div.mana-base
     (for [color (:mana-base @app-state)]
       ^{:key color} [basic-view color])]])
 
