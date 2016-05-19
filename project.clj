@@ -16,7 +16,8 @@
                  [speclj "3.3.2"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
-            [lein-environ "1.0.1"]]
+            [lein-environ "1.0.1"]
+            [lein-sassy "1.0.7"]]
 
   :min-lein-version "2.6.1"
 
@@ -35,6 +36,9 @@
   ;; because that's where our development helper functions like (run) and
   ;; (browser-repl) live.
   :repl-options {:init-ns user}
+
+  :sass {:src "resources/app/stylesheets"
+         :dst "resources/public/stylesheets"}
 
   :cljsbuild {:builds
               {:app
@@ -104,7 +108,7 @@
 
              :uberjar
              {:source-paths ^:replace ["src/clj"]
-              :hooks [leiningen.cljsbuild]
+              :hooks [leiningen.cljsbuild leiningen.sass]
               :omit-source true
               :aot :all
               :cljsbuild {:builds
