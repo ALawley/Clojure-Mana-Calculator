@@ -1,0 +1,66 @@
+body {
+  background-color: #e2e2e2; }
+
+h2 {
+  text-align: center;
+  font-family: Courier; }
+
+input {
+  width: 100%; }
+
+div #inputs {
+  width: 100%;
+  display: inline; }
+
+div .mana-symbol-input {
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  vertical-align: center;
+  padding: 5px;
+  margin: auto;
+  width: 12.5%; }
+
+div .mana-base {
+  display: inline;
+  width: 100%;
+  margin: 0 auto; }
+
+div .color {
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  vertical-align: center;
+  padding: 5px;
+  margin: 0 auto auto 0;
+  width: 20%; }
+
+div #w {
+  background-color: white;
+  color: black; }
+
+div #u {
+  background-color: blue;
+  color: white; }
+
+div #b {
+  background-color: black;
+  color: white; }
+
+div #r {
+  background-color: red;
+  color: white; }
+
+div #g {
+  background-color: green;
+  color: white; }
+
+.header {
+  font-weight: bold;
+  display: block; }
+
+.value {
+  font-weight: bold;
+  display: block; }
+
+/*# sourceMappingURL=style.css.map */
