@@ -1,7 +1,15 @@
 body {
   background-color: #e2e2e2; }
 
+h1 {
+  text-align: center;
+  font-family: Courier; }
+
 h2 {
+  text-align: center;
+  font-family: Courier; }
+
+h4 {
   text-align: center;
   font-family: Courier; }
 
