@@ -62,8 +62,8 @@
         [:input {:type "number"
                   :value (:lands @app-state)
                   :on-change (fn [e]
-                              (swap! app-state assoc :lands (int (.-target.value e))
-                                (mana-base-update!)))}]]]))
+                              (swap! app-state assoc :lands (int (.-target.value e)))
+                              (mana-base-update!))}]]]))
 
 (defn display-basic [color]
   (str
