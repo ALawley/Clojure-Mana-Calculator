@@ -5,25 +5,25 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.8.40" :scope "provided"]
+                 [org.clojure/clojurescript "1.9.36" :scope "provided"]
+                 [com.cognitect/transit-clj "0.8.285"]
                  [ring "1.4.0"]
                  [ring/ring-defaults "0.2.0"]
                  [bk/ring-gzip "0.1.1"]
                  [ring.middleware.logger "0.5.0"]
                  [compojure "1.5.0"]
-                 [environ "1.0.2"]
-                 [reagent "0.6.0-alpha"]
-                 [speclj "3.3.2"]]
+                 [environ "1.0.3"]
+                 [http-kit "2.1.19"]
+                 [reagent "0.6.0-rc"]]
 
-  :plugins [[lein-cljsbuild "1.1.1"]
-            [lein-environ "1.0.1"]
-            [lein-sassy "1.0.7"]]
+  :plugins [[lein-cljsbuild "1.1.3"]
+            [lein-environ "1.0.3"]]
 
   :min-lein-version "2.6.1"
 
-  :source-paths ["src/clj" "src/cljs" "dev"]
+  :source-paths ["src/clj" "src/cljs"]
 
-  :test-paths ["spec/clj" "spec/cljs"]
+  :test-paths ["test/clj"]
 
   :clean-targets ^{:protect false} [:target-path :compile-path "resources/public/js"]
 
@@ -37,12 +37,9 @@
   ;; (browser-repl) live.
   :repl-options {:init-ns user}
 
-  :sass {:src "resources/app/stylesheets"
-         :dst "resources/public/stylesheets"}
-
   :cljsbuild {:builds
-              {:app
-               {:source-paths ["src/cljs"]
+              [{:id "app"
+                :source-paths ["src/cljs"]
 
                 :figwheel true
                 ;; Alternatively, you can configure a function to run every time figwheel reloads.
@@ -52,7 +49,23 @@
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/mana_calc.js"
                            :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true}}}}
+                           :source-map-timestamp true}}
+
+               {:id "test"
+                :source-paths ["src/cljs" "test/cljs"]
+                :compiler {:output-to "resources/public/js/compiled/testable.js"
+                           :main mana-calc.test-runner
+                           :optimizations :none}}
+
+               {:id "min"
+                :source-paths ["src/cljs"]
+                :jar true
+                :compiler {:main mana-calc.core
+                           :output-to "resources/public/js/compiled/mana_calc.js"
+                           :output-dir "target"
+                           :source-map-timestamp true
+                           :optimizations :advanced
+                           :pretty-print false}}]}
 
   ;; When running figwheel from nREPL, figwheel will read this configuration
   ;; stanza, but it will read it without passing through leiningen's profile
@@ -88,32 +101,23 @@
 
              :server-logfile "log/figwheel.log"}
 
+  :doo {:build "test"}
+
   :profiles {:dev
-             {:dependencies [[figwheel "0.5.2"]
-                             [figwheel-sidecar "0.5.2"]
+             {:dependencies [[figwheel "0.5.4-2"]
+                             [figwheel-sidecar "0.5.4-2"]
                              [com.cemerick/piggieback "0.2.1"]
-                             [org.clojure/tools.nrepl "0.2.12"]
-                             [speclj "3.3.0"]]
+                             [org.clojure/tools.nrepl "0.2.12"]]
 
-              :plugins [[lein-figwheel "0.5.2"]
-                        [lein-doo "0.1.6"]
-                        [speclj "3.3.0"]]
+              :plugins [[lein-figwheel "0.5.4-2"]
+                        [lein-doo "0.1.6"]]
 
-              :cljsbuild {:builds
-                          {:source-paths ["src/cljs"]
-                           :compiler
-                           {:output-to "resources/public/js/compiled/testable.js"
-                            :main mana-calc.test-runner
-                            :optimizations :none}}}}
+              :source-paths ["dev"]
+              :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
 
              :uberjar
              {:source-paths ^:replace ["src/clj"]
-              :hooks [leiningen.cljsbuild leiningen.sass]
+              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+              :hooks []
               :omit-source true
-              :aot :all
-              :cljsbuild {:builds
-                          {:app
-                           {:source-paths ^:replace ["src/cljs"]
-                            :compiler
-                            {:optimizations :advanced
-                             :pretty-print false}}}}}})
+              :aot :all}})
