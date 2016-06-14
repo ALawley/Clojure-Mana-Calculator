@@ -136,15 +136,12 @@ new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE
 
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [mana_calc.core.mana_base_view], null);
 });
-mana_calc.core.start = (function mana_calc$core$start(){
-var G__13018_13022 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [mana_calc.core.land_inputs], null);
-var G__13019_13023 = document.getElementById("inputs");
-(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__13018_13022,G__13019_13023) : reagent.core.render_component.call(null,G__13018_13022,G__13019_13023));
-
-var G__13020 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [mana_calc.core.mana_base_view], null);
-var G__13021 = document.getElementById("results");
-return (reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__13020,G__13021) : reagent.core.render_component.call(null,G__13020,G__13021));
-});
+var G__13014_13016 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [mana_calc.core.land_inputs], null);
+var G__13015_13017 = document.getElementById("inputs");
+(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__13014_13016,G__13015_13017) : reagent.core.render_component.call(null,G__13014_13016,G__13015_13017));
+var G__13018_13020 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [mana_calc.core.mana_base_view], null);
+var G__13019_13021 = document.getElementById("results");
+(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__13018_13020,G__13019_13021) : reagent.core.render_component.call(null,G__13018_13020,G__13019_13021));
 mana_calc.core.parse_input = (function mana_calc$core$parse_input(input_str){
 return cljs.reader.read_string(input_str);
 });

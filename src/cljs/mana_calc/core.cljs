@@ -101,13 +101,12 @@
   [land-inputs]
   [mana-base-view])
 
-(defn start []
-  (r/render-component
-    [land-inputs]
-    (.getElementById js/document "inputs"))
-  (r/render-component
-    [mana-base-view]
-    (.getElementById js/document "results")))
+(r/render-component
+  [land-inputs]
+  (.getElementById js/document "inputs"))
+(r/render-component
+  [mana-base-view]
+  (.getElementById js/document "results"))
 
 (defn parse-input [input-str]
   (reader/read-string input-str))
