@@ -22,7 +22,7 @@ You will need the following things properly installed on your computer.
 * `(run)`
 * Visit your app at [http://localhoust:3449](http://localhost:3449).
 
-##### This app is also hosted on [https://aqueous-reef-92749.herokuapp.com/](Heroku).
+##### This app is also hosted on [Heroku](https://aqueous-reef-92749.herokuapp.com/).
 
 ## Technologies Used
 
