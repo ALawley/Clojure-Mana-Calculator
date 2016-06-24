@@ -8,11 +8,7 @@
 
 (defn symbol-sum
   [symbol-counts]
-  (reduce
-    (fn [accum [color mana-symbols]]
-      (+ accum mana-symbols))
-    0
-    symbol-counts))
+  (reduce + (vals symbol-counts)))
 
 (defn remainder-rank
   [manabase]
