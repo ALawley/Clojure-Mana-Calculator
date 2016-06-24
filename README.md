@@ -1,120 +1,39 @@
-# mana-calc
+# Magic: the Gathering Mana Calculator
 
+#### Clojure Independent Study Project - 5/19/2016
 
-## Development
+#### By Anna Lawley
 
-Open a terminal and type `lein repl` to start a Clojure REPL
-(interactive prompt).
+## Description
 
-In the REPL, type
+This app is an exercise in building an app with Clojure and ClojureScript. It's a simple tool for Magic: the Gathering players to enter the number of resources their decks will need to function as well as how many resource cards the deck will be running, and the page will then calculate a distribution of resource cards by type (Players list total mana symbols by color and how many basic lands the deck wants, and the page returns a listing of basic lands by type with a recommended count).
 
-```clojure
-(run)
-(browser-repl)
-```
+## Prerequisites
 
-The call to `(run)` starts the Figwheel server at port 3449, which takes care of
-live reloading ClojureScript code and CSS. Figwheel's server will also act as
-your app server, so requests are correctly forwarded to the http-handler you
-define.
+You will need the following things properly installed on your computer.
 
-Running `(browser-repl)` starts the Weasel REPL server, and drops you into a
-ClojureScript REPL. Evaluating expressions here will only work once you've
-loaded the page, so the browser can connect to Weasel.
+* [Leiningen](http://leiningen.org/)
 
-When you see the line `Successfully compiled "resources/public/app.js" in 21.36
-seconds.`, you're ready to go. Browse to `http://localhost:3449` and enjoy.
+## Installation and Running
 
-**Attention: It is not needed to run `lein figwheel` separately. Instead we
-launch Figwheel directly from the REPL**
+* `git clone <repository-url>` this repository
+* change into the new directory
+* `lein repl`
+* `(run)`
+* Visit your app at [http://localhoust:3449](http://localhost:3449).
 
-## Trying it out
+## Technologies Used
 
-If all is well you now have a browser window saying 'Hello Chestnut',
-and a REPL prompt that looks like `cljs.user=>`.
+Clojure, ClojureScript, Reagent, React
 
-Open `resources/public/css/style.css` and change some styling of the
-H1 element. Notice how it's updated instantly in the browser.
+### License
 
-Open `src/cljs/mana-calc/core.cljs`, and change `dom/h1` to
-`dom/h2`. As soon as you save the file, your browser is updated.
+This software is licensed under the MIT license.
 
-In the REPL, type
+Copyright (c) 2016 Anna Lawley
 
-```
-(ns mana-calc.core)
-(swap! app-state assoc :text "Interactivity FTW")
-```
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-Notice again how the browser updates.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-### Lighttable
-
-Lighttable provides a tighter integration for live coding with an inline
-browser-tab. Rather than evaluating cljs on the command line with weasel repl,
-evaluate code and preview pages inside Lighttable.
-
-Steps: After running `(run)`, open a browser tab in Lighttable. Open a cljs file
-from within a project, go to the end of an s-expression and hit Cmd-ENT.
-Lighttable will ask you which client to connect. Click 'Connect a client' and
-select 'Browser'. Browse to [http://localhost:3449](http://localhost:3449)
-
-View LT's console to see a Chrome js console.
-
-Hereafter, you can save a file and see changes or evaluate cljs code (without saving a file). Note that running a weasel server is not required to evaluate code in Lighttable.
-
-### Emacs/Cider
-
-Start a repl in the context of your project with `M-x cider-jack-in`.
-
-Switch to repl-buffer with `C-c C-z` and start web and figwheel servers with
-`(run)`, and weasel server with `(browser-repl`). Load
-[http://localhost:3449](http://localhost:3449) on an external browser, which
-connects to weasel, and start evaluating cljs inside Cider.
-
-To run the Clojurescript tests, do
-
-```
-lein doo phantom
-```
-
-## Deploying to Heroku
-
-This assumes you have a
-[Heroku account](https://signup.heroku.com/dc), have installed the
-[Heroku toolbelt](https://toolbelt.heroku.com/), and have done a
-`heroku login` before.
-
-``` sh
-git init
-git add -A
-git commit
-heroku create
-git push heroku master:master
-heroku open
-```
-
-## Running with Foreman
-
-Heroku uses [Foreman](http://ddollar.github.io/foreman/) to run your
-app, which uses the `Procfile` in your repository to figure out which
-server command to run. Heroku also compiles and runs your code with a
-Leiningen "production" profile, instead of "dev". To locally simulate
-what Heroku does you can do:
-
-``` sh
-lein with-profile -dev,+production uberjar && foreman start
-```
-
-Now your app is running at
-[http://localhost:5000](http://localhost:5000) in production mode.
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
-
-## Chestnut
-
-Created with [Chestnut](http://plexus.github.io/chestnut/) 0.11.0 (3b671cf8).
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
