@@ -20,59 +20,39 @@
                        :g 0}}))
 
 (defn mana-update! [e color]
-  (swap! app-state assoc-in [:mana-symbols color] (int (.-target.value e))))
+  (swap! app-state assoc-in [:mana-symbols color] (if (< (int (.-target.value e)) 0)
+                                                      0
+                                                      (int (.-target.value e)))))
 
 (defn mana-base-update! []
   (swap! app-state assoc
          :mana-base (calc/calculator (:mana-symbols @app-state)
                                      (:lands @app-state))))
 
+(def color-abbrevs
+  {:w "White" :u "Blue" :b "Black" :r "Red" :g "Green"})
+
+(defn land-input [color]
+  [:div.mana-symbol-input
+   [:span.header (get color-abbrevs color)]
+   [:input {:type "number"
+            :value (color (:mana-symbols @app-state))
+            :on-change (fn [e]
+                         (mana-update! e color)
+                         (mana-base-update!))}]])
+
 (defn land-inputs []
   (let [v (atom 0)]
     [:div.mana-symbols
      [:h2.symbols-header "Mana Symbols"]
-     [:div.mana-symbol-input
-      [:span.header "White"]
-      [:input {:type "number"
-               :value (:w (:mana-symbols @app-state))
-               :on-change (fn [e]
-                            (mana-update! e :w)
-                            (mana-base-update!))}]]
-     [:div.mana-symbol-input
-      [:span.header "Blue"]
-      [:input {:type "number"
-               :value (:u (:mana-symbols @app-state))
-               :on-change (fn [e]
-                            (mana-update! e :u)
-                            (mana-base-update!))}]]
-     [:div.mana-symbol-input
-      [:span.header "Black"]
-      [:input {:type "number"
-               :value (:b (:mana-symbols @app-state))
-               :on-change (fn [e]
-                            (mana-update! e :b)
-                            (mana-base-update!))}]]
-     [:div.mana-symbol-input
-      [:span.header "Red"]
-      [:input {:type "number"
-               :value (:r (:mana-symbols @app-state))
-               :on-change (fn [e]
-                            (mana-update! e :r)
-                            (mana-base-update!))}]]
-     [:div.mana-symbol-input
-      [:span.header "Green"]
-      [:input {:type "number"
-               :value (:g (:mana-symbols @app-state))
-               :on-change (fn [e]
-                            (mana-update! e :g)
-                            (mana-base-update!))}]]
+     (map land-input (keys color-abbrevs))
      [:div.mana-symbol-input
       [:span.header "Basic Lands"]
       [:input {:type "number"
-               :value (:lands @app-state)
-               :on-change (fn [e]
-                            (swap! app-state assoc :lands (int (.-target.value e)))
-                            (mana-base-update!))}]]]))
+                :value (:lands @app-state)
+                :on-change (fn [e]
+                             (swap! app-state assoc :lands (int (.-target.value e)))
+                             (mana-base-update!))}]]]))
 
 (defn display-basic [color]
   [:div

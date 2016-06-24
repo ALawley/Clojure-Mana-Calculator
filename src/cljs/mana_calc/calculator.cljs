@@ -41,7 +41,7 @@
     0
     manabase))
 
-(defn round-up-keys
+(defn keys-to-round-up
   [symbol-counts lands]
   (take
     (- lands (round-down-sum (raw-mana-calc symbol-counts lands)))
@@ -56,7 +56,7 @@
     {}
     deck))
 
-(defn round-up-all [deck colors-to-round]
+(defn round-up-by-keys [deck colors-to-round]
   (reduce #(round-up-color %1 %2)
           deck
           colors-to-round))
@@ -68,5 +68,5 @@
     (fn [accum [color mana-symbols]]
       (into accum {color (int (Math/floor mana-symbols))}))
     {}
-    (round-up-all (raw-mana-calc symbol-counts lands)
-                  (round-up-keys symbol-counts lands))))
+    (round-up-by-keys (raw-mana-calc symbol-counts lands)
+                  (keys-to-round-up symbol-counts lands))))
