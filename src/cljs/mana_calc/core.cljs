@@ -66,7 +66,8 @@
    [:span.value (val color)]])
 
 (defn basic-view [color]
-  (if (> (val color) 0)
+  (if (and (> (calc/symbol-sum (:mana-symbols @app-state)) 0)
+        (> (val color) 0))
     [:div {:id (key color)
            :class "color"}
      (display-basic color)]))
