@@ -20,7 +20,7 @@ You will need the following things properly installed on your computer.
 * change into the new directory
 * `lein repl`
 * `(run)`
-* Visit your app at [http://localhoust:3449](http://localhost:3449).
+* Visit your app at [http://localhost:3449](http://localhost:3449).
 
 ##### This app is also hosted on [Heroku](https://aqueous-reef-92749.herokuapp.com/).
 
